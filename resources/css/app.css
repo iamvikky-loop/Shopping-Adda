@@ -1,11 +1,31 @@
-@import 'tailwindcss';
+/* Navbar */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+.navbar-brand{
+    color:#ffffff !important;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+.navbar .form-control{
+    border-radius:8px;
+}
+
+.nav-link{
+    font-weight:500;
+}
+
+.nav-link:hover{
+    color:#ff6b00 !important;
+}
+
+.btn-warning{
+    background:#ff6b00;
+    border:none;
+    color:#fff;
+}
+
+.btn-warning:hover{
+    background:#e65c00;
+}
+
+.bi{
+    font-size:20px;
 }
