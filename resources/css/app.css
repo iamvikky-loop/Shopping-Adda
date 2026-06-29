@@ -1,31 +1,9 @@
-/* Navbar */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.navbar-brand{
-    color:#ffffff !important;
-}
+/* Custom CSS */
 
-.navbar .form-control{
-    border-radius:8px;
-}
-
-.nav-link{
-    font-weight:500;
-}
-
-.nav-link:hover{
-    color:#ff6b00 !important;
-}
-
-.btn-warning{
-    background:#ff6b00;
-    border:none;
-    color:#fff;
-}
-
-.btn-warning:hover{
-    background:#e65c00;
-}
-
-.bi{
-    font-size:20px;
+body{
+    background:#f8f9fa;
 }

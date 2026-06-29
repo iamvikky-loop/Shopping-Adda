@@ -1,23 +1,24 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-@section('title', 'Shopping Adda')
+    <title>@yield('title', 'Shopping Adda')</title>
 
-@section('content')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body>
 
-<div class="container py-5">
+    {{-- Navbar --}}
+    @include('components.navbar')
 
-    <div class="text-center">
+    <main class="container py-4">
+        @yield('content')
+    </main>
 
-        <h1 class="display-3 fw-bold">
-            Shopping Adda
-        </h1>
+    {{-- Footer --}}
+    @include('components.footer')
 
-        <p class="lead">
-            India's Trusted Online Shopping Destination
-        </p>
-
-    </div>
-
-</div>
-
-@endsection
+</body>
+</html>
