@@ -2,30 +2,41 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+
         'category_id',
         'sub_category_id',
         'brand_id',
+
         'name',
         'slug',
         'sku',
+
         'description',
+
         'price',
         'sale_price',
         'stock',
-        'weight',
+
         'thumbnail',
+
         'featured',
         'trending',
         'status',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
     public function category()
     {
@@ -47,13 +58,13 @@ class Product extends Model
         return $this->hasMany(ProductImage::class);
     }
 
-    public function variants()
-    {
-        return $this->hasMany(ProductVariant::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
+   public function variants()
+{
+    return $this->hasMany(ProductVariant::class)
+        ->with([
+            'attributes.attribute',
+            'attributes.value',
+            'images'
+        ]);
+}
 }

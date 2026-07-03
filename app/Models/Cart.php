@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
@@ -13,6 +13,12 @@ class Cart extends Model
         'user_id',
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -21,5 +27,23 @@ class Cart extends Model
     public function items()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    public function total()
+    {
+        return $this->items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+    }
+
+    public function totalItems()
+    {
+        return $this->items->sum('quantity');
     }
 }

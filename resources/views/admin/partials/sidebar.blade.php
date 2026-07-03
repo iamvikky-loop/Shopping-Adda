@@ -1,9 +1,3 @@
-<h3 class="text-center mb-4">
-    🛍 Shopping Adda
-</h3>
-
-<hr class="border-light">
-
 <ul class="nav flex-column">
 
     <li class="nav-item mb-2">
@@ -42,6 +36,23 @@
     </li>
 
     <li class="nav-item mb-2">
+        <a href="{{ route('admin.product-variants.index') }}" class="nav-link text-white">
+            <i class="bi bi-boxes me-2"></i>
+            Product Variants
+        </a>
+    </li>
+
+    {{-- Uncomment this only after Variant Images CRUD is created --}}
+    {{--
+    <li class="nav-item mb-2">
+        <a href="{{ route('admin.variant-images.index') }}" class="nav-link text-white">
+            <i class="bi bi-images me-2"></i>
+            Variant Images
+        </a>
+    </li>
+    --}}
+
+    <li class="nav-item mb-2">
         <a href="#" class="nav-link text-white">
             <i class="bi bi-cart-check me-2"></i>
             Orders
@@ -61,5 +72,18 @@
             Settings
         </a>
     </li>
+<li class="nav-item mb-2">
+    <a href="{{ route('admin.product-attributes.index') }}" class="nav-link text-white">
+        <i class="bi bi-list-ul me-2"></i>
+        Product Attributes
+    </a>
+</li>
+
+<li class="nav-item mb-2">
+    <a href="{{ route('admin.product-attribute-values.index') }}" class="nav-link text-white">
+        <i class="bi bi-card-list me-2"></i>
+        Attribute Values
+    </a>
+</li>
 
 </ul>

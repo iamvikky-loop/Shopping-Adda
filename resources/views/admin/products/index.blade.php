@@ -128,34 +128,36 @@
 
                         </td>
 
-                        <td>
+                       <td>
 
-                            <a href="{{ route('admin.products.edit',$product->id) }}"
-                               class="btn btn-warning btn-sm">
+    <a href="{{ route('admin.products.show', $product->id) }}"
+       class="btn btn-info btn-sm">
+        View
+    </a>
 
-                                Edit
+    <a href="{{ route('admin.products.edit', $product->id) }}"
+       class="btn btn-warning btn-sm">
+        Edit
+    </a>
 
-                            </a>
+    <form action="{{ route('admin.products.destroy', $product->id) }}"
+          method="POST"
+          class="d-inline">
 
-                            <form action="{{ route('admin.products.destroy',$product->id) }}"
-                                  method="POST"
-                                  class="d-inline">
+        @csrf
+        @method('DELETE')
 
-                                @csrf
-                                @method('DELETE')
+        <button
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('Delete this product?')">
 
-                                <button
-                                    onclick="return confirm('Delete this product?')"
-                                    class="btn btn-danger btn-sm">
+            Delete
 
-                                    Delete
+        </button>
 
-                                </button>
+    </form>
 
-                            </form>
-
-                        </td>
-
+</td>
                     </tr>
 
                 @empty

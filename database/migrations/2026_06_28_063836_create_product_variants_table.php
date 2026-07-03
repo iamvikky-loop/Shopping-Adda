@@ -9,28 +9,34 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('product_variants', function (Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('product_variants', function (Blueprint $table) {
 
-        $table->id();
+            $table->id();
 
-        $table->foreignId('product_id')
-              ->constrained()
-              ->cascadeOnDelete();
+            $table->foreignId('product_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-        $table->string('sku')->unique();
+            $table->string('color')->nullable();
 
-        $table->decimal('price',10,2)->nullable();
+            $table->string('size')->nullable();
 
-        $table->decimal('sale_price',10,2)->nullable();
+            $table->string('sku')->unique();
 
-        $table->integer('stock')->default(0);
+            $table->decimal('price', 10, 2)->nullable();
 
-        $table->timestamps();
+            $table->decimal('sale_price', 10, 2)->nullable();
 
-    });
-}
+            $table->integer('stock')->default(0);
+
+            $table->boolean('status')->default(true);
+
+            $table->timestamps();
+
+        });
+    }
 
     /**
      * Reverse the migrations.

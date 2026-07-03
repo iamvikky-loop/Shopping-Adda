@@ -9,28 +9,29 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('attribute_values', function (Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('product_attribute_values', function (Blueprint $table) {
 
-        $table->id();
+            $table->id();
 
-        $table->foreignId('product_attribute_id')
-              ->constrained()
-              ->cascadeOnDelete();
+            $table->foreignId('attribute_id')
+                ->constrained('product_attributes')
+                ->cascadeOnDelete();
 
-        $table->string('value');
+            $table->string('value');
 
-        $table->timestamps();
+            $table->boolean('status')->default(1);
 
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('attribute_values');
+        Schema::dropIfExists('product_attribute_values');
     }
 };

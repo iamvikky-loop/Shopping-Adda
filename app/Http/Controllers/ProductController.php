@@ -317,10 +317,18 @@ class ProductController extends Controller
             ->with('success', 'Product Deleted Successfully.');
     }
 
-    public function show(Product $product)
-    {
-        return redirect()->route('admin.products.index');
-    }
+   public function show(Product $product)
+{
+    $product->load([
+        'category',
+        'subCategory',
+        'brand',
+        'images',
+        'variants'
+    ]);
+
+    return view('admin.products.show', compact('product'));
+}
 
     public function getSubCategories($categoryId)
     {

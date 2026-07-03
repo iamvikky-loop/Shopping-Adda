@@ -10,17 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('product_attributes', function (Blueprint $table) {
+    {
+        Schema::create('product_attributes', function (Blueprint $table) {
+            $table->id();
 
-        $table->id();
+            $table->string('name');
 
-        $table->string('name');
+            $table->boolean('status')->default(1);
 
-        $table->timestamps();
-
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
