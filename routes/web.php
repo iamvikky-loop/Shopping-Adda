@@ -1,14 +1,19 @@
 <?php
 
+<?php
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Home\ProductController as HomeProductController;
-use App\Http\Controllers\Home\SearchController;
 use App\Http\Controllers\Home\CategoryController as HomeCategoryController;
+use App\Http\Controllers\Home\SearchController;
+
 use App\Http\Controllers\Admin\DashboardController;
+
 use App\Http\Controllers\VariantGeneratorController;
 use App\Http\Controllers\CartController;
+
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\BrandController;

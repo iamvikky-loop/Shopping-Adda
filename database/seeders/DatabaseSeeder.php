@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,12 +19,19 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             // SubCategorySeeder::class, // Uncomment after creating it
+            // BrandSeeder::class,
+            // AttributeSeeder::class,
+            // ProductSeeder::class,
+            // BannerSeeder::class,
         ]);
 
-        // Create Test User
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create Test User (only if it doesn't exist)
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password'),
+            ]
+        );
     }
 }
