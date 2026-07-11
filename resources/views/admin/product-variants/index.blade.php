@@ -31,7 +31,13 @@
 
                 <tr>
 
-                    <th>#</th>
+                    <th><th width="40">
+    <input
+        type="checkbox"
+        id="selectAll">
+</th>
+
+<th>#</th></th>
 
                     <th>Product</th>
 

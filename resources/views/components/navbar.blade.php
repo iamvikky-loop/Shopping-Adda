@@ -1,33 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
 
     <div class="container">
 
         <!-- Logo -->
-        <a class="navbar-brand fw-bold fs-3" href="/">
+        <a class="navbar-brand fw-bold fs-3" href="{{ route('home') }}">
             Shopping Adda
         </a>
 
-        <!-- Mobile Button -->
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarContent">
+        <!-- Mobile Toggle -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent">
 
             <span class="navbar-toggler-icon"></span>
 
         </button>
 
-        <div class="collapse navbar-collapse"
-             id="navbarContent">
+        <div class="collapse navbar-collapse" id="navbarContent">
 
             <!-- Search -->
 
-            <form class="d-flex mx-auto w-50">
+            <form
+                action="{{ route('search') }}"
+                method="GET"
+                class="d-flex mx-auto w-50">
 
                 <input
                     class="form-control"
                     type="search"
-                    placeholder="Search for products...">
+                    name="search"
+                    placeholder="Search products..."
+                    value="{{ request('search') }}">
 
                 <button
                     class="btn btn-warning ms-2"
@@ -39,13 +44,15 @@
 
             </form>
 
-            <!-- Icons -->
+            <!-- Right Menu -->
 
             <ul class="navbar-nav ms-auto align-items-center">
 
                 <li class="nav-item me-3">
 
-                    <a class="nav-link" href="#">
+                    <a
+                        class="nav-link"
+                        href="#">
 
                         <i class="bi bi-heart fs-5"></i>
 
@@ -55,7 +62,9 @@
 
                 <li class="nav-item me-3">
 
-                    <a class="nav-link" href="#">
+                    <a
+                        class="nav-link"
+                        href="{{ route('cart.index') }}">
 
                         <i class="bi bi-cart3 fs-5"></i>
 
@@ -63,15 +72,74 @@
 
                 </li>
 
-                <li class="nav-item">
+                @guest
 
-                    <a class="btn btn-warning">
+                    <li class="nav-item">
 
-                        Login
+                        <a
+                            href="{{ route('login') }}"
+                            class="btn btn-warning">
 
-                    </a>
+                            Login
 
-                </li>
+                        </a>
+
+                    </li>
+
+                @endguest
+
+                @auth
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown">
+
+                            {{ Auth::user()->name }}
+
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ route('dashboard') }}">
+
+                                    Dashboard
+
+                                </a>
+
+                            </li>
+
+                            <li>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('logout') }}">
+
+                                    @csrf
+
+                                    <button
+                                        class="dropdown-item">
+
+                                        Logout
+
+                                    </button>
+
+                                </form>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                @endauth
 
             </ul>
 
@@ -81,9 +149,7 @@
 
 </nav>
 
-<!-- Second Menu -->
-
-<div class="bg-white border-bottom shadow-sm">
+<div class="bg-light border-top">
 
     <div class="container">
 

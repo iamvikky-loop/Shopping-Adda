@@ -4,37 +4,46 @@
 
 @section('content')
 
-<div class="container py-5">
+<div class="container py-4">
 
     <div class="row">
 
-        <!-- Product Images -->
-        <div class="col-lg-6">
+        {{-- ========================= --}}
+        {{-- LEFT SIDE IMAGES --}}
+        {{-- ========================= --}}
+
+        <div class="col-lg-6 mb-4">
 
             <div class="row">
 
-                <!-- Thumbnails -->
+                {{-- Thumbnail Images --}}
+
                 <div class="col-2">
 
                     @if($product->thumbnail)
+
                         <img
                             src="{{ asset('uploads/products/'.$product->thumbnail) }}"
                             class="img-fluid border rounded mb-2 thumb-image active-thumb"
-                            onclick="changeImage(this)"
-                            style="cursor:pointer">
+                            style="cursor:pointer"
+                            onclick="changeImage(this)">
+
                     @endif
 
                     @foreach($product->images as $image)
+
                         <img
                             src="{{ asset('uploads/products/gallery/'.$image->image) }}"
                             class="img-fluid border rounded mb-2 thumb-image"
-                            onclick="changeImage(this)"
-                            style="cursor:pointer">
+                            style="cursor:pointer"
+                            onclick="changeImage(this)">
+
                     @endforeach
 
                 </div>
 
-                <!-- Main Image -->
+                {{-- Main Image --}}
+
                 <div class="col-10">
 
                     @if($product->thumbnail)
@@ -42,14 +51,14 @@
                         <img
                             id="main-image"
                             src="{{ asset('uploads/products/'.$product->thumbnail) }}"
-                            class="img-fluid rounded border shadow-sm w-100">
+                            class="img-fluid border rounded shadow-sm w-100">
 
                     @else
 
                         <img
                             id="main-image"
-                            src="https://via.placeholder.com/600x600"
-                            class="img-fluid rounded border shadow-sm w-100">
+                            src="https://via.placeholder.com/700x700?text=No+Image"
+                            class="img-fluid border rounded shadow-sm w-100">
 
                     @endif
 
@@ -59,40 +68,59 @@
 
         </div>
 
-        <!-- Product Details -->
+        {{-- ========================= --}}
+        {{-- PRODUCT DETAILS --}}
+        {{-- ========================= --}}
+
         <div class="col-lg-6">
 
-            <h2 class="fw-bold mb-3">
+            <small class="text-success fw-bold">
+
+                {{ $product->brand->name ?? 'Shopping Adda' }}
+
+            </small>
+
+            <h2 class="fw-bold mt-2">
+
                 {{ $product->name }}
+
             </h2>
 
             <div class="mb-3">
 
                 @if($product->sale_price)
 
-                    <h3 class="text-danger">
+                    <h2 class="text-danger fw-bold">
 
                         ₹<span id="product-price">
+
                             {{ number_format($product->sale_price,2) }}
+
                         </span>
 
-                    </h3>
+                    </h2>
 
-                    <del class="text-muted">
+                    <span class="text-muted">
 
-                        ₹{{ number_format($product->price,2) }}
+                        <del>
 
-                    </del>
+                            ₹{{ number_format($product->price,2) }}
+
+                        </del>
+
+                    </span>
 
                 @else
 
-                    <h3>
+                    <h2 class="fw-bold">
 
                         ₹<span id="product-price">
+
                             {{ number_format($product->price,2) }}
+
                         </span>
 
-                    </h3>
+                    </h2>
 
                 @endif
 
@@ -105,7 +133,18 @@
                     <span class="badge bg-success">
 
                         In Stock
-                        (<span id="product-stock">{{ $product->stock }}</span>)
+
+                    </span>
+
+                    <span class="ms-2 text-muted">
+
+                        Available :
+
+                        <span id="product-stock">
+
+                            {{ $product->stock }}
+
+                        </span>
 
                     </span>
 
@@ -121,42 +160,123 @@
 
             </div>
 
-            <p class="text-muted">
+            <div class="mb-4">
 
-                {{ $product->short_description }}
+                {!! nl2br(e($product->short_description)) !!}
 
-            </p>
+            </div>
+
+            <hr>
+
+            <table class="table table-bordered">
+
+                <tr>
+
+                    <th width="180">
+
+                        Category
+
+                    </th>
+
+                    <td>
+
+                        {{ $product->category->name ?? '-' }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Sub Category
+
+                    </th>
+
+                    <td>
+
+                        {{ $product->subCategory->name ?? '-' }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Brand
+
+                    </th>
+
+                    <td>
+
+                        {{ $product->brand->name ?? '-' }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        SKU
+
+                    </th>
+
+                    <td>
+
+                        {{ $product->sku }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <hr>
+                        {{-- ========================= --}}
+            {{-- PRODUCT VARIANTS --}}
+            {{-- ========================= --}}
 
             @if($product->variants->count())
 
-                <hr>
+                <h5 class="fw-bold mb-3">
 
-                <h5>Select Variant</h5>
+                    Select Variant
 
-                <div class="row">
+                </h5>
+
+                <div class="row mb-4">
 
                     @foreach($product->variants as $variant)
 
                         <div class="col-md-6 mb-3">
 
                             <div
-                                class="card variant-card h-100 p-3"
+                                class="card variant-card p-3 h-100"
                                 style="cursor:pointer"
                                 onclick="selectVariant(
                                     '{{ $variant->id }}',
                                     '{{ $variant->sale_price ?: $variant->price }}',
-                                    '{{ $variant->stock }}'
+                                    '{{ $variant->stock }}',
+                                    this
                                 )">
 
-                                <strong>SKU:</strong>
+                                <div class="fw-bold">
 
-                                {{ $variant->sku }}
+                                    SKU :
+                                    {{ $variant->sku }}
+
+                                </div>
 
                                 <hr>
 
                                 @foreach($variant->variantAttributes as $attribute)
 
-                                    <span class="badge bg-primary me-1">
+                                    <span class="badge bg-primary me-1 mb-1">
 
                                         {{ $attribute->attribute->name }}
 
@@ -170,15 +290,13 @@
 
                                 <hr>
 
-                                <strong>
+                                <div class="fw-bold text-danger">
 
                                     ₹{{ number_format($variant->sale_price ?: $variant->price,2) }}
 
-                                </strong>
+                                </div>
 
-                                <br>
-
-                                <small>
+                                <small class="text-muted">
 
                                     Stock :
 
@@ -196,14 +314,13 @@
 
             @endif
 
-            <hr>
-                        <h5>Description</h5>
+            {{-- ========================= --}}
+            {{-- ADD TO CART FORM --}}
+            {{-- ========================= --}}
 
-            <div class="mb-4">
-                {!! nl2br(e($product->description)) !!}
-            </div>
-
-            <form action="{{ route('cart.store') }}" method="POST">
+            <form
+                action="{{ route('cart.store') }}"
+                method="POST">
 
                 @csrf
 
@@ -214,59 +331,303 @@
 
                 <input
                     type="hidden"
-                    id="variant_id"
-                    name="variant_id">
+                    id="product_variant_id"
+                    name="product_variant_id">
 
-                <div class="row">
+                <div class="row align-items-center mb-4">
 
                     <div class="col-md-3">
+
+                        <label class="form-label">
+
+                            Quantity
+
+                        </label>
 
                         <input
                             type="number"
                             name="quantity"
-                            value="1"
+                            class="form-control"
                             min="1"
-                            class="form-control">
-
-                    </div>
-
-                    <div class="col-md-9">
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary w-100">
-
-                            <i class="bi bi-cart-plus"></i>
-
-                            Add To Cart
-
-                        </button>
+                            value="1">
 
                     </div>
 
                 </div>
 
+                <div class="d-grid gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning btn-lg">
+
+                        <i class="bi bi-cart-plus-fill"></i>
+
+                        Add To Cart
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-lg">
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                        Buy Now
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-dark">
+
+                        <i class="bi bi-heart"></i>
+
+                        Add To Wishlist
+
+                    </button>
+
+                </div>
+
             </form>
+
+            <hr class="my-4">
+
+            <div class="row text-center">
+
+                <div class="col-4">
+
+                    <i class="bi bi-truck fs-3 text-primary"></i>
+
+                    <div class="small mt-2">
+
+                        Fast Delivery
+
+                    </div>
+
+                </div>
+
+                <div class="col-4">
+
+                    <i class="bi bi-shield-check fs-3 text-success"></i>
+
+                    <div class="small mt-2">
+
+                        Secure Payment
+
+                    </div>
+
+                </div>
+
+                <div class="col-4">
+
+                    <i class="bi bi-arrow-repeat fs-3 text-danger"></i>
+
+                    <div class="small mt-2">
+
+                        Easy Returns
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
 
     <hr class="my-5">
+        {{-- ========================= --}}
+    {{-- PRODUCT DESCRIPTION --}}
+    {{-- ========================= --}}
 
-    <h3 class="mb-4">
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-header bg-white">
+
+                    <h4 class="mb-0">
+
+                        Product Description
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    {!! nl2br(e($product->description)) !!}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        Specifications
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body p-0">
+
+                    <table class="table table-striped mb-0">
+
+                        <tr>
+
+                            <th width="40%">
+
+                                Brand
+
+                            </th>
+
+                            <td>
+
+                                {{ $product->brand->name ?? '-' }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Category
+
+                            </th>
+
+                            <td>
+
+                                {{ $product->category->name ?? '-' }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Sub Category
+
+                            </th>
+
+                            <td>
+
+                                {{ $product->subCategory->name ?? '-' }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                SKU
+
+                            </th>
+
+                            <td>
+
+                                {{ $product->sku }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Stock
+
+                            </th>
+
+                            <td>
+
+                                {{ $product->stock }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Status
+
+                            </th>
+
+                            <td>
+
+                                @if($product->stock > 0)
+
+                                    <span class="badge bg-success">
+
+                                        Available
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-danger">
+
+                                        Out Of Stock
+
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- ========================= --}}
+    {{-- RELATED PRODUCTS --}}
+    {{-- ========================= --}}
+
+    <h3 class="fw-bold mb-4">
+
         Related Products
+
     </h3>
 
     <div class="row">
 
         @forelse($relatedProducts as $item)
 
-            <div class="col-lg-3 col-md-4 col-6 mb-4">
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
 
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 shadow-sm border-0">
 
-                    <a href="{{ route('product.show',$item->slug) }}">
+                    <a
+                        href="{{ route('product.show',$item->slug) }}">
 
                         @if($item->thumbnail)
 
@@ -319,13 +680,25 @@
 
                         @else
 
-                            <div class="fw-bold">
+                            <span class="fw-bold">
 
                                 ₹{{ number_format($item->price,2) }}
 
-                            </div>
+                            </span>
 
                         @endif
+
+                    </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <a
+                            href="{{ route('product.show',$item->slug) }}"
+                            class="btn btn-primary w-100">
+
+                            View Product
+
+                        </a>
 
                     </div>
 
@@ -337,9 +710,9 @@
 
             <div class="col-12">
 
-                <div class="alert alert-secondary">
+                <div class="alert alert-info text-center">
 
-                    No related products found.
+                    No Related Products Found.
 
                 </div>
 
@@ -354,25 +727,27 @@
 @endsection
 
 @push('scripts')
+
 <script>
 
-function changeImage(element)
-{
-    document.getElementById('main-image').src = element.src;
+function changeImage(image){
+
+    document.getElementById('main-image').src = image.src;
 
     document.querySelectorAll('.thumb-image').forEach(function(img){
-        img.classList.remove('active-thumb');
+        img.classList.remove('border-primary');
     });
 
-    element.classList.add('active-thumb');
+    image.classList.add('border-primary');
+
 }
 
-function selectVariant(id, price, stock)
-{
-    document.getElementById('variant_id').value = id;
+function selectVariant(id, price, stock, element){
+
+    document.getElementById('product_variant_id').value = id;
 
     document.getElementById('product-price').innerHTML =
-        Number(price).toFixed(2);
+        parseFloat(price).toFixed(2);
 
     document.getElementById('product-stock').innerHTML = stock;
 
@@ -381,9 +756,11 @@ function selectVariant(id, price, stock)
         card.classList.remove('shadow');
     });
 
-    event.currentTarget.classList.add('border-primary');
-    event.currentTarget.classList.add('shadow');
+    element.classList.add('border-primary');
+    element.classList.add('shadow');
+
 }
 
 </script>
+
 @endpush

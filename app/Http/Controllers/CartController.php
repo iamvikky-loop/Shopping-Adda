@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\ShippingSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,13 +18,48 @@ class CartController extends Controller
     public function index()
     {
         $cart = Cart::with([
-            'items.product',
-            'items.variant'
+            'items.product.images',
+            'items.product.brand',
+            'items.variant',
         ])->firstOrCreate([
             'user_id' => Auth::id(),
         ]);
 
-        return view('cart.index', compact('cart'));
+        // Recommended Products
+        $recommendedProducts = Product::where('status', 1)
+            ->where('stock', '>', 0)
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Shipping Settings
+        $shipping = ShippingSetting::first();
+
+        // Cart Total
+        $subtotal = $cart->total();
+
+        // Shipping Charge
+        $shippingCharge = 0;
+
+        if ($shipping && $shipping->enabled) {
+
+            if ($subtotal < $shipping->free_shipping_limit) {
+
+                $shippingCharge = $shipping->shipping_charge;
+            }
+        }
+
+        // Grand Total
+        $grandTotal = $subtotal + $shippingCharge;
+
+        return view('cart.index', compact(
+            'cart',
+            'recommendedProducts',
+            'shipping',
+            'subtotal',
+            'shippingCharge',
+            'grandTotal'
+        ));
     }
 
     /**
@@ -62,25 +98,25 @@ class CartController extends Controller
         if ($cartItem) {
 
             $cartItem->quantity += $request->quantity;
-
+            $cartItem->price = $price;
             $cartItem->save();
 
         } else {
 
             CartItem::create([
-                'cart_id'            => $cart->id,
-                'product_id'         => $product->id,
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
                 'product_variant_id' => $request->product_variant_id,
-                'quantity'           => $request->quantity,
-                'price'              => $price,
+                'quantity' => $request->quantity,
+                'price' => $price,
             ]);
         }
 
-        return redirect()
-            ->back()
+        return redirect()->route('cart.index')
             ->with('success', 'Product added to cart successfully.');
     }
-        /**
+
+    /**
      * Update Cart Quantity
      */
     public function update(Request $request, CartItem $cartItem)
@@ -117,10 +153,7 @@ class CartController extends Controller
      */
     public function clear()
     {
-        $cart = Cart::where(
-            'user_id',
-            Auth::id()
-        )->first();
+        $cart = Cart::where('user_id', Auth::id())->first();
 
         if ($cart) {
             $cart->items()->delete();

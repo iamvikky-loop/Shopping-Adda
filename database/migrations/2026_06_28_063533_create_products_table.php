@@ -9,54 +9,72 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-  public function up(): void
-{
-    Schema::create('products', function (Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('products', function (Blueprint $table) {
 
-        $table->id();
+            $table->id();
 
-        $table->foreignId('category_id')
-            ->constrained()
-            ->cascadeOnDelete();
+            $table->foreignId('category_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-        $table->foreignId('sub_category_id')
-            ->nullable()
-            ->constrained()
-            ->nullOnDelete();
+            $table->foreignId('sub_category_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
-        $table->foreignId('brand_id')
-            ->nullable()
-            ->constrained()
-            ->nullOnDelete();
+            $table->foreignId('brand_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
-        $table->string('name');
+            $table->string('name');
 
-        $table->string('slug')->unique();
+            $table->string('slug')->unique();
 
-        $table->string('sku')->unique();
+            $table->string('sku')->unique();
 
-        $table->longText('description')->nullable();
+            $table->string('barcode')->nullable();
 
-        $table->decimal('price',10,2);
+            $table->text('short_description')->nullable();
 
-        $table->decimal('sale_price',10,2)->nullable();
+            $table->longText('description')->nullable();
 
-        $table->integer('stock')->default(0);
+            $table->decimal('cost_price', 10, 2)->nullable();
 
-        $table->float('weight')->nullable();
+            $table->decimal('price', 10, 2);
 
-        $table->string('thumbnail')->nullable();
+            $table->decimal('sale_price', 10, 2)->nullable();
 
-        $table->boolean('featured')->default(false);
+            $table->integer('stock')->default(0);
 
-        $table->boolean('trending')->default(false);
+            $table->integer('min_stock')->default(5);
 
-        $table->boolean('status')->default(true);
+            $table->float('weight')->nullable();
 
-        $table->timestamps();
+            $table->string('thumbnail')->nullable();
 
-    });
-}
+            $table->string('video_url')->nullable();
+
+            $table->boolean('featured')->default(false);
+
+            $table->boolean('trending')->default(false);
+
+            $table->boolean('status')->default(true);
+
+            $table->string('meta_title')->nullable();
+
+            $table->text('meta_description')->nullable();
+
+            $table->text('meta_keywords')->nullable();
+
+            $table->timestamp('published_at')->nullable();
+
+            $table->timestamps();
+
+        });
+    }
 
     /**
      * Reverse the migrations.
