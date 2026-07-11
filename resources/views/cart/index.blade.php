@@ -4,144 +4,136 @@
 
 @section('content')
 
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
+<div class="container py-5">
 
-<div class="row">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    {{-- LEFT SIDE --}}
-    <div class="col-lg-8">
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
-        <h2 class="fw-bold mb-4">
-            Shopping Cart
-        </h2>
+    <div class="row">
 
-        @forelse($cart->items as $item)
+        {{-- LEFT SIDE --}}
+        <div class="col-lg-8">
 
-        <div class="card border-0 shadow rounded-4 mb-4">
+            <h2 class="fw-bold mb-4">
+                Shopping Cart
+            </h2>
 
-            <div class="card-body p-4">
+            @forelse($cart->items as $item)
 
-                <div class="row align-items-center">
+            <div class="card border-0 shadow rounded-4 mb-4">
 
-                    {{-- PRODUCT IMAGE --}}
-                    <div class="col-md-3 text-center">
+                <div class="card-body p-4">
 
-                        @if($item->product->thumbnail)
+                    <div class="row align-items-center">
 
-                        <img
-                            src="{{ asset('uploads/products/'.$item->product->thumbnail) }}"
-                            class="img-fluid rounded"
-                            style="height:180px;object-fit:contain;">
+                        <div class="col-md-3 text-center">
 
-                        @else
+                            @if($item->product && $item->product->thumbnail)
 
-                        <img
-                            src="https://via.placeholder.com/250"
-                            class="img-fluid rounded">
+                                <img src="{{ asset('uploads/products/'.$item->product->thumbnail) }}"
+                                     class="img-fluid rounded"
+                                     style="height:180px;object-fit:contain;">
 
-                        @endif
+                            @else
 
-                    </div>
+                                <img src="https://via.placeholder.com/250"
+                                     class="img-fluid rounded">
 
-                    {{-- PRODUCT DETAILS --}}
-                    <div class="col-md-6">
-
-                        <h3 class="fw-bold mb-2">
-
-                            {{ $item->product->name }}
-
-                        </h3>
-
-                        <div class="text-success fw-semibold mb-2">
-
-                            In Stock
+                            @endif
 
                         </div>
 
-                        @if($item->variant)
+                        <div class="col-md-6">
 
-                        <div class="mb-2">
+                            <h4 class="fw-bold">
 
-                            @foreach($item->variant->variantAttributes as $attribute)
+                                {{ $item->product->name }}
 
-                            <span class="badge bg-dark me-1">
+                            </h4>
 
-                                {{ $attribute->attribute->name }}
+                            <p class="text-success fw-bold">
+                                In Stock
+                            </p>
 
-                                :
+                            @if($item->variant)
 
-                                {{ $attribute->value->value }}
+                                @foreach($item->variant->variantAttributes as $attribute)
 
-                            </span>
+                                    <span class="badge bg-dark me-1">
 
-                            @endforeach
+                                        {{ $attribute->attribute->name }}
+
+                                        :
+
+                                        {{ $attribute->value->value }}
+
+                                    </span>
+
+                                @endforeach
+
+                            @endif
+
+                            <h4 class="text-danger mt-3">
+
+                                ₹{{ number_format($item->price,2) }}
+
+                            </h4>
 
                         </div>
 
-                        @endif
+                        <div class="col-md-3">
 
-                        <h3 class="text-danger fw-bold">
+                            <form action="{{ route('cart.update',$item->id) }}"
+                                  method="POST">
 
-                            ₹{{ number_format($item->price,2) }}
+                                @csrf
+                                @method('PUT')
 
-                        </h3>
+                                <label class="form-label">
 
-                    </div>
+                                    Quantity
 
-                    {{-- QUANTITY --}}
-                    <div class="col-md-3">
+                                </label>
 
-                        <form
-                            action="{{ route('cart.update',$item->id) }}"
-                            method="POST">
+                                <input type="number"
+                                       name="quantity"
+                                       value="{{ $item->quantity }}"
+                                       min="1"
+                                       class="form-control mb-2">
 
-                            @csrf
+                                <button class="btn btn-primary w-100">
 
-                            @method('PUT')
+                                    Update
 
-                            <label class="form-label">
+                                </button>
 
-                                Quantity
+                            </form>
 
-                            </label>
+                            <form action="{{ route('cart.destroy',$item->id) }}"
+                                  method="POST"
+                                  class="mt-2">
 
-                            <input
-                                type="number"
-                                name="quantity"
-                                value="{{ $item->quantity }}"
-                                min="1"
-                                class="form-control mb-2">
+                                @csrf
+                                @method('DELETE')
 
-                            <button
-                                class="btn btn-primary w-100">
+                                <button class="btn btn-outline-danger w-100">
 
-                                Update
+                                    Remove
 
-                            </button>
+                                </button>
 
-                        </form>
+                            </form>
 
-                        <form
-                            action="{{ route('cart.destroy',$item->id) }}"
-                            method="POST"
-                            class="mt-2">
-
-                            @csrf
-
-                            @method('DELETE')
-
-                            <button
-                                class="btn btn-outline-danger w-100">
-
-                                Remove
-
-                            </button>
-
-                        </form>
+                        </div>
 
                     </div>
 
@@ -149,160 +141,154 @@
 
             </div>
 
-        </div>
+            @empty
 
-        @empty
+                <div class="card shadow">
 
-        <div class="card shadow border-0">
+                    <div class="card-body text-center py-5">
 
-            <div class="card-body text-center p-5">
+                        <h3>Your Cart is Empty</h3>
 
-                <h3>Your Cart is Empty</h3>
+                        <a href="{{ url('/') }}"
+                           class="btn btn-primary mt-3">
 
-                <a href="{{ url('/') }}"
-                   class="btn btn-outline-secondary mt-3">
+                            Continue Shopping
 
-                    Continue Shopping
-
-                </a>
-
-            </div>
-
-        </div>
-
-        @endforelse
-
-    </div>
-
-    {{-- ORDER SUMMARY --}}
-    <div class="col-lg-4">
-
-        <div class="card shadow border-0 rounded-4 sticky-top"
-             style="top:120px;">
-
-            <div class="card-body">
-
-                <h3 class="fw-bold mb-4">
-
-                    Order Summary
-
-                </h3>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>Total Items</span>
-
-                    <strong>
-
-                        {{ $cart->totalItems() }}
-
-                    </strong>
-
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>Subtotal</span>
-
-                    <strong>
-
-                        ₹{{ number_format($subtotal,2) }}
-
-                    </strong>
-
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>Shipping</span>
-
-                    @if($shippingCharge > 0)
-
-                    <strong class="text-danger">
-
-                        ₹{{ number_format($shippingCharge,2) }}
-
-                    </strong>
-
-                    @else
-
-                    <strong class="text-success">
-
-                        FREE
-
-                    </strong>
-
-                    @endif
-
-                </div>
-
-                @if($shipping && $shipping->enabled)
-
-                    @if($shippingCharge > 0)
-
-                    <div class="alert alert-warning py-2">
-
-                        Add
-
-                        <strong>
-
-                            ₹{{ number_format($shipping->free_shipping_limit - $subtotal,2) }}
-
-                        </strong>
-
-                        more to get
-
-                        <strong>FREE Shipping</strong>
+                        </a>
 
                     </div>
 
-                    @else
+                </div>
 
-                    <div class="alert alert-success py-2">
+            @endforelse
 
-                        🎉 Congratulations!
+        </div>
 
-                        You unlocked
+        {{-- ORDER SUMMARY --}}
+        <div class="col-lg-4">
 
-                        <strong>FREE SHIPPING</strong>
+            <div class="card shadow border-0 rounded-4 sticky-top"
+                 style="top:120px;">
 
-                    </div>
+                <div class="card-body">
 
-                    @endif
+                    <h3 class="fw-bold mb-4">
 
-                @endif
-
-                <hr>
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h4 class="fw-bold">
-
-                        Grand Total
-
-                    </h4>
-
-                    <h3 class="text-danger fw-bold">
-
-                        ₹{{ number_format($grandTotal,2) }}
+                        Order Summary
 
                     </h3>
 
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span>Total Items</span>
+
+                        <strong>
+
+                            {{ $cart->totalItems() }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span>Subtotal</span>
+
+                        <strong>
+
+                            ₹{{ number_format($subtotal,2) }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span>Shipping</span>
+
+                        @if($shippingCharge>0)
+
+                            <strong class="text-danger">
+
+                                ₹{{ number_format($shippingCharge,2) }}
+
+                            </strong>
+
+                        @else
+
+                            <strong class="text-success">
+
+                                FREE
+
+                            </strong>
+
+                        @endif
+
+                    </div>
+
+                    @if(isset($shipping) && $shipping && $shipping->status)
+
+                        @if($shippingCharge>0)
+
+                            <div class="alert alert-warning">
+
+                                Add
+
+                                <strong>
+
+                                    ₹{{ number_format($shipping->free_shipping_above-$subtotal,2) }}
+
+                                </strong>
+
+                                more for FREE Shipping
+
+                            </div>
+
+                        @else
+
+                            <div class="alert alert-success">
+
+                                🎉 You unlocked FREE Shipping
+
+                            </div>
+
+                        @endif
+
+                    @endif
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+
+                        <h4 class="fw-bold">
+
+                            Grand Total
+
+                        </h4>
+
+                        <h3 class="text-danger">
+
+                            ₹{{ number_format($grandTotal,2) }}
+
+                        </h3>
+
+                    </div>
+
+                    <a href="{{ route('checkout.index') }}"
+                       class="btn btn-warning btn-lg w-100 mt-4 fw-bold">
+
+                        Proceed To Checkout
+
+                    </a>
+
+                    <a href="{{ url('/') }}"
+                       class="btn btn-outline-dark w-100 mt-3">
+
+                        Continue Shopping
+
+                    </a>
+
                 </div>
-
-                <button
-                    class="btn btn-warning btn-lg w-100 mt-4 fw-bold">
-
-                    Proceed To Checkout
-
-                </button>
-
-                <a href="{{ url('/') }}"
-                   class="btn btn-outline-dark w-100 mt-3">
-
-                    Continue Shopping
-
-                </a>
 
             </div>
 

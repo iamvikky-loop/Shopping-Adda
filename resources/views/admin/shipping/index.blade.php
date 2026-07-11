@@ -1,142 +1,63 @@
-@extends('admin.layouts.app')
+<?php
 
-@section('title','Shipping Settings')
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-@section('content')
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('customer_addresses', function (Blueprint $table) {
 
-<div class="container py-4">
+            $table->id();
 
-    <div class="card shadow">
+            // User
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">
-                Shipping Settings
-            </h4>
-        </div>
+            // Customer Details
+            $table->string('full_name');
+            $table->string('email')->nullable();
+            $table->string('mobile',20);
+            $table->string('alternate_mobile',20)->nullable();
 
-        <div class="card-body">
+            // Address
+            $table->string('country')->default('India');
+            $table->string('state');
+            $table->string('city');
+            $table->string('pincode',10);
 
-            @if(session('success'))
+            $table->text('address_line_1');
+            $table->text('address_line_2')->nullable();
 
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            $table->string('landmark')->nullable();
 
-            @endif
+            // Home / Office / Other
+            $table->enum('address_type',[
+                'Home',
+                'Office',
+                'Other'
+            ])->default('Home');
 
-            <form action="{{ route('admin.shipping.update') }}" method="POST">
+            // Default Address
+            $table->boolean('is_default')
+                ->default(false);
 
-                @csrf
+            $table->timestamps();
 
-                <div class="mb-3">
+        });
+    }
 
-                    <label class="form-label">
-                        Shipping Type
-                    </label>
-
-                    <select
-                        class="form-select"
-                        name="shipping_type">
-
-                        <option value="flat"
-                            {{ $shipping->shipping_type=='flat'?'selected':'' }}>
-                            Flat Shipping
-                        </option>
-
-                        <option value="free"
-                            {{ $shipping->shipping_type=='free'?'selected':'' }}>
-                            Free Shipping
-                        </option>
-
-                        <option value="weight"
-                            {{ $shipping->shipping_type=='weight'?'selected':'' }}>
-                            Weight Based
-                        </option>
-
-                        <option value="location"
-                            {{ $shipping->shipping_type=='location'?'selected':'' }}>
-                            Location Based
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Shipping Charge
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        class="form-control"
-                        name="shipping_charge"
-                        value="{{ $shipping->shipping_charge }}">
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Free Shipping Above
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        class="form-control"
-                        name="free_shipping_above"
-                        value="{{ $shipping->free_shipping_above }}">
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        COD Charge
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        class="form-control"
-                        name="cod_charge"
-                        value="{{ $shipping->cod_charge }}">
-
-                </div>
-
-                <div class="form-check mb-4">
-
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="status"
-                        value="1"
-                        {{ $shipping->status ? 'checked' : '' }}>
-
-                    <label class="form-check-label">
-
-                        Enable Shipping
-
-                    </label>
-
-                </div>
-
-                <button
-                    class="btn btn-primary">
-
-                    Save Settings
-
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-@endsection
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('customer_addresses');
+    }
+};

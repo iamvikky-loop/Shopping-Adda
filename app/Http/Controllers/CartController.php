@@ -41,9 +41,9 @@ class CartController extends Controller
         // Shipping Charge
         $shippingCharge = 0;
 
-        if ($shipping && $shipping->enabled) {
+        if ($shipping && $shipping->status) {
 
-            if ($subtotal < $shipping->free_shipping_limit) {
+            if ($subtotal < $shipping->free_shipping_above) {
 
                 $shippingCharge = $shipping->shipping_charge;
             }
